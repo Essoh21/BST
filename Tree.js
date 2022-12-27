@@ -18,12 +18,93 @@ class Tree {
         return root;
     }
 
+    insert(value, root = this.root) {
+        if (root == null) {
+            root = new Node(value);
+            return root;
+        }
+
+        if (value < root.data) {
+            root.left = this.insert(value, root.left)
+        } else if (value > root.data) {
+            root.right = this.insert(value, root.right);
+        }
+        return root;
+    }
+
+    remove(value, root = this.root) {
+        if (root == null) {
+            return root;
+        }
+
+        if (value < root.data) {
+            root.left = this.remove(value, root.left);
+        } else if (value > root.data) {
+            root.right = this.remove(value, root.right);
+        } else {
+            if (root.left == null) {
+                return root.right
+            }
+
+            if (root.right == null) {
+                return root.left;
+            }
+
+            root.data = this.minValue(root.right);
+            root.right = this.remove(root.data, root.right);
+        }
+
+        return root;
+
+    }
+
+    find(value, root = this.root) {
+        if (root.data == value) {
+            return root;
+        }
+
+        if (value < root.data) {
+            return this.find(value, root.left);
+        }
+
+        return this.find(value, root.right);
+    }
+
+    levelOrder(callBack = null, root = this.root) {
+        let Queue = [];
+        let breadFirstValues = [];
+        if (root == null) return;
+
+        Queue.push(root);
+        while (Queue.length > 0) {
+            let currentNode = Queue.shift();
+            callBack == null ? breadFirstValues.push(currentNode.data) : callBack(currentNode.data);
+            if (!(currentNode.left == null)) Queue.push(currentNode.left);
+            if (!(currentNode.right == null)) Queue.push(currentNode.right);
+        }
+
+        if (breadFirstValues.length > 0) return breadFirstValues;
+    }
+
+    inorder(callBack = null, root = this.root) {
+        if (root == null) return;
+    }
+
+    minValue(root) {
+        let minimumValue = root.data;
+        while (root.left != null) {
+            minimumValue = root.left.data;
+            root = root.left;
+        }
+        return minimumValue;
+    }
     removeDuplicatesAndSort(arrayObj) {
         return [...(new Set(arrayObj))].sort((a, b) => a - b);
     }
 }
 
-const myTree = new Tree([1, 2, 3, 5, 6, 12, 15, 15, 85, 5]);
+const myTree = new Tree([1, 2, 3, 5, 14, 45, 58, 83, 70, 6, 12, 15, 15, 85, 5]);
+
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
     if (node.right !== null) {
@@ -35,3 +116,5 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     }
 }
 prettyPrint(myTree.root);
+//console.log(myTree.find(58));
+console.log(myTree.levelOrder())
