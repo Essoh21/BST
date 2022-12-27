@@ -87,7 +87,33 @@ class Tree {
     }
 
     inorder(callBack = null, root = this.root) {
+        let outputArray = [];
         if (root == null) return;
+
+        this.inorder(callBack, root.left);
+        callBack == null ? outputArray.push(root.data) : callBack(root.data);
+        this.inorder(callBack, root.right);
+        if (outputArray.length > 0) return outputArray;
+
+    }
+
+    preorder(callBack = null, root = this.root) {
+        let outputArray = [];
+        if (root == null) return;
+        callBack == null ? outputArray.push(root.data) : callBack(root.data);
+        this.preorder(callBack, root.left);
+        this.preorder(callBack, root.right);
+        if (outputArray.length > 0) return outputArray;
+
+    }
+
+    postorder(callBack = null, root = this.root) {
+        let outputArray = [];
+        if (root == null) return;
+        this.preorder(callBack, root.left);
+        this.preorder(callBack, root.right);
+        callBack == null ? outputArray.push(root.data) : callBack(root.data);
+        if (outputArray.length > 0) return outputArray;
     }
 
     minValue(root) {
@@ -103,7 +129,7 @@ class Tree {
     }
 }
 
-const myTree = new Tree([1, 2, 3, 5, 14, 45, 58, 83, 70, 6, 12, 15, 15, 85, 5]);
+const myTree = new Tree([1, 2, 3, 5, 83, 70, 6, 12, 15, 15, 85, 5]);
 
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -117,4 +143,4 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 }
 prettyPrint(myTree.root);
 //console.log(myTree.find(58));
-console.log(myTree.levelOrder())
+console.log(myTree.postorder())
