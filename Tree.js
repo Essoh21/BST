@@ -86,43 +86,83 @@ class Tree {
         if (breadFirstValues.length > 0) return breadFirstValues;
     }
 
-    inorder(callBack = null, root = this.root) {
-        let outputArray = [];
+    inorder(callBack = null, root = this.root, outputArray = []) {
         if (root == null) return;
 
-        this.inorder(callBack, root.left);
+        this.inorder(callBack, root.left, outputArray);
         callBack == null ? outputArray.push(root.data) : callBack(root.data);
-        this.inorder(callBack, root.right);
+        this.inorder(callBack, root.right, outputArray);
+        if (outputArray.length > 0) return outputArray;
+
+    }
+    /*
+        inorder(callBack = null, root = this.root) {
+            const outputArray = [];
+            const queue = [];
+            if (root == null) return;
+    
+            queue.push(root);
+            while (queue.length > 0) {
+                let lastNode = queue.pop();
+                if (!(lastNode.left == null)) queue.push(lastNode.left);
+    
+                callBack == null ? outputArray.push(lastNode.data) : callBack(lastNode.data);
+                if (!(lastNode.right == null)) queue.push(lastNode.right);
+    
+            }
+            if (outputArray.length > 0) return outputArray;
+    
+        }
+    */
+    preorder(callBack = null, root = this.root, outputArray = []) {
+        if (root == null) return;
+        callBack == null ? outputArray.push(root.data) : callBack(root.data);
+        this.preorder(callBack, root.left, outputArray);
+        this.preorder(callBack, root.right, outputArray);
         if (outputArray.length > 0) return outputArray;
 
     }
 
-    preorder(callBack = null, root = this.root) {
-        let outputArray = [];
-        if (root == null) return;
-        callBack == null ? outputArray.push(root.data) : callBack(root.data);
-        this.preorder(callBack, root.left);
-        this.preorder(callBack, root.right);
-        if (outputArray.length > 0) return outputArray;
 
-    }
-
-    postorder(callBack = null, root = this.root) {
-        let outputArray = [];
+    postorder(callBack = null, root = this.root, outputArray = []) {
         if (root == null) return;
-        this.preorder(callBack, root.left);
-        this.preorder(callBack, root.right);
+        this.postorder(callBack, root.left, outputArray);
+        this.postorder(callBack, root.right, outputArray);
         callBack == null ? outputArray.push(root.data) : callBack(root.data);
         if (outputArray.length > 0) return outputArray;
     }
 
-    minValue(root) {
+    height(givenNode) {
+        if (givenNode == null) return 0;
+        let left = this.height(givenNode.left);
+        let right = this.height(givenNode.right);
+        return Math.max(left, right) + 1;
+    }
+
+    depth(givenNode) {
+        if (givenNode == null) return;
+        if (givenNode.data < this.minValue() || givenNode.data > this.maxValue()) return;
+        if (givenNode.data = this.root.data) return 0;
+
+    }
+
+
+    minValue(root = this.root) {
         let minimumValue = root.data;
         while (root.left != null) {
             minimumValue = root.left.data;
             root = root.left;
         }
         return minimumValue;
+    }
+
+    maxValue(root = this.root) {
+        let maximumVal = root.data;
+        while (root.right != null) {
+            maximumVal = root.right.data;
+            root = root.right;
+        }
+        return maximumVal;
     }
     removeDuplicatesAndSort(arrayObj) {
         return [...(new Set(arrayObj))].sort((a, b) => a - b);
@@ -142,5 +182,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     }
 }
 prettyPrint(myTree.root);
-//console.log(myTree.find(58));
-console.log(myTree.postorder())
+const myNode = myTree.find(70);
+console.log(myTree.inorder())
+console.log(myTree.height(myNode));
+console.log(myTree.maxValue());
