@@ -95,25 +95,7 @@ class Tree {
         if (outputArray.length > 0) return outputArray;
 
     }
-    /*
-        inorder(callBack = null, root = this.root) {
-            const outputArray = [];
-            const queue = [];
-            if (root == null) return;
-    
-            queue.push(root);
-            while (queue.length > 0) {
-                let lastNode = queue.pop();
-                if (!(lastNode.left == null)) queue.push(lastNode.left);
-    
-                callBack == null ? outputArray.push(lastNode.data) : callBack(lastNode.data);
-                if (!(lastNode.right == null)) queue.push(lastNode.right);
-    
-            }
-            if (outputArray.length > 0) return outputArray;
-    
-        }
-    */
+
     preorder(callBack = null, root = this.root, outputArray = []) {
         if (root == null) return;
         callBack == null ? outputArray.push(root.data) : callBack(root.data);
@@ -139,11 +121,31 @@ class Tree {
         return Math.max(left, right) + 1;
     }
 
-    depth(givenNode) {
-        if (givenNode == null) return;
-        if (givenNode.data < this.minValue() || givenNode.data > this.maxValue()) return;
-        if (givenNode.data = this.root.data) return 0;
+    depth(givenNode, root = this.root, count = 0) {
+        if (givenNode == null || root == null) return;
+        if (givenNode == root) return count;
+        if (givenNode.data < root.data) {
+            return (this.depth(givenNode, root.left, count += 1));
+        }
+        return this.depth(givenNode, root.right, count += 1);
+    }
 
+    isbalanced(tree = this.root) {
+        if (tree == null) return true;
+        let leftHeight = this.height(tree.left);
+        let rightHeight = this.height(tree.right);
+        if ((Math.abs(leftHeight - rightHeight) <= 1)
+            && this.isbalanced(tree.left) == true
+            && (this.isbalanced(tree.right) == true)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    rebalance(tree) {
+        let treeNodesValues = this.inorder(null, tree);
+        return this.buildTree(this.removeDuplicatesAndSort(treeNodesValues));
     }
 
 
@@ -169,20 +171,17 @@ class Tree {
     }
 }
 
-const myTree = new Tree([1, 2, 3, 5, 83, 70, 6, 12, 15, 15, 85, 5]);
+// const myTree = new Tree([1, 2, 3, 5, 83, 70, 6, 12, 15, 15, 85, 5]);
 
 
-const prettyPrint = (node, prefix = '', isLeft = true) => {
-    if (node.right !== null) {
-        prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
-    }
-    console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
-    if (node.left !== null) {
-        prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
-    }
-}
-prettyPrint(myTree.root);
-const myNode = myTree.find(70);
-console.log(myTree.inorder())
-console.log(myTree.height(myNode));
-console.log(myTree.maxValue());
+// const prettyPrint = (node, prefix = '', isLeft = true) => {
+//     if (node.right !== null) {
+//         prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+//     }
+//     console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+//     if (node.left !== null) {
+//         prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+//     }
+// }
+// prettyPrint(myTree.root);
+// const myNode = myTree.find(70);
